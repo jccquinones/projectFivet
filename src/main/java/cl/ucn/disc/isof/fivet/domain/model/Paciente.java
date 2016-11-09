@@ -66,7 +66,7 @@ public class Paciente extends BaseModel {
     private String color;
 
     /**
-     * Sexo?
+     * Sexo
      */
     public enum Sexo {
         @EnumValue("Macho")
@@ -79,4 +79,9 @@ public class Paciente extends BaseModel {
         INDETERMINADO,
     }
 
+    /**
+     * Especie
+     */
+    @Getter
+    private String especie;
 }
