@@ -1,5 +1,6 @@
 package cl.ucn.disc.isof.fivet.domain.service.ebean;
 
+import cl.ucn.disc.isof.fivet.domain.model.Control;
 import cl.ucn.disc.isof.fivet.domain.model.Paciente;
 import cl.ucn.disc.isof.fivet.domain.model.Persona;
 import cl.ucn.disc.isof.fivet.domain.service.BackendService;
@@ -10,6 +11,10 @@ import com.avaje.ebean.config.EncryptKeyManager;
 import com.avaje.ebean.config.ServerConfig;
 import com.durrutia.ebean.BaseModel;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
+//import com.avaje.ebean.Expr;
 
 @Slf4j
 public class EbeanBackendService implements BackendService {
@@ -73,17 +78,71 @@ public class EbeanBackendService implements BackendService {
 
     }
 
-
     /**
-     * @param rut
+     * Obtiene una persona desde el backend dado su rut o correo electronico.
+     *
+     * @param rutEmail
      * @return the Persona
      */
-    @Override
-    public Persona getPersona(String rut) {
+    public Persona getPersona(final String rutEmail){
         return this.ebeanServer.find(Persona.class)
                 .where()
-                .eq("rut", rut)
+                .or(com.avaje.ebean.Expr.eq("rut", rutEmail),com.avaje.ebean.Expr.eq("mail", rutEmail))
                 .findUnique();
+    }
+
+    public List<Paciente> getPacientes(){
+        return this.ebeanServer.find(Paciente.class).findList();
+    }
+
+    /**
+     * Obtiene un {@link Paciente} a partir de su numero de ficha.
+     *
+     * @param numeroPaciente de ficha.
+     * @return the {@link Paciente}.
+     */
+    public Paciente getPaciente(final Integer numeroPaciente){
+        return this.ebeanServer.find(Paciente.class)
+                .where()
+                .eq("numero", numeroPaciente)
+                .findUnique();
+    }
+
+    public List<Control> getControlesVeterinario(final String rutVeterinario){
+        return this.ebeanServer.find(Control.class)
+                .where()
+                .eq("rut",rutVeterinario)
+                .findList();
+    }
+
+    /**
+     * Obtiene todos los {@link Paciente} que poseen un match en su nombre.
+     *
+     * @param nombre a buscar, ejemplo: "pep" que puede retornar pepe, pepa, pepilla, etc..
+     * @return the {@link List} of {@link Paciente}.
+     */
+    public List<Paciente> getPacientesPorNombre(final String nombre){
+        return this.ebeanServer.find(Paciente.class)
+                .where()
+                .eq("nombre",nombre)
+                .findList();
+    }
+
+    /**
+     * Agrega un {@link Control} a un {@link Paciente} identificado por el numeroPaciente.
+     *
+     * @param control        a agregar al paciente.
+     * @param numeroPaciente a asociar.
+     * @throws RuntimeException en caso de no encontrar al paciente.
+     */
+    public void agregarControl(final Control control, final Integer numeroPaciente){
+
+        /*Paciente p = this.ebeanServer.find(Paciente.class)
+                .where()
+                .eq("numeroPaciente",numeroPaciente)
+                .findUnique();*/
+
+
     }
 
     /**

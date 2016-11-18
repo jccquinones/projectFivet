@@ -4,10 +4,13 @@ import com.avaje.ebean.annotation.EnumValue;
 import com.durrutia.ebean.BaseModel;
 import lombok.*;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.List;
+
 
 /**
  * Clase que representa a un Paciente de la veterinaria.
@@ -56,6 +59,8 @@ public class Paciente extends BaseModel {
     /**
      * Sexo
      */
+    @Getter
+    @Column
     private Sexo sexo;
 
     /**
@@ -83,5 +88,13 @@ public class Paciente extends BaseModel {
      * Especie
      */
     @Getter
+    @Column
     private String especie;
+
+    /**
+     * Listado de controles
+     */
+    @Getter
+    @Column
+    private List<Control> listaControl;
 }

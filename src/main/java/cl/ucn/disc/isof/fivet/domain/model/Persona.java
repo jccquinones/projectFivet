@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
+ * Clase que representa a una Persona
+ *
  * @author Diego Urrutia Astorga
  * @version 20161026
  */
