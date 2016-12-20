@@ -1,9 +1,8 @@
 package cl.ucn.disc.isof.fivet.domain.model;
+
 import lombok.*;
 import org.hibernate.validator.constraints.NotEmpty;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import java.util.Date;
 

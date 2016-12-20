@@ -114,5 +114,33 @@ public class TestEbeanBackendService {
 
     }
 
+    @Test
+    public void testGetPersona() {
 
+    }
+
+    @Test
+    public void testGetPacientes() {
+
+    }
+
+    @Test
+    public void testGetPaciente() {
+
+    }
+
+    @Test
+    public void testGetControlesVeterinario() {
+
+    }
+
+    @Test
+    public void testGetPacientesPorNombre() {
+
+    }
+
+    @Test
+    public void testAgregarControl() {
+
+    }
 }

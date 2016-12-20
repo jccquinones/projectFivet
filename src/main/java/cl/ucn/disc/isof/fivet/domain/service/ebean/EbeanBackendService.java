@@ -51,6 +51,8 @@ public class EbeanBackendService implements BackendService {
         config.addClass(Paciente.class);
         config.addClass(Paciente.Sexo.class);
 
+        config.addClass(Control.class);
+
         // http://ebean-orm.github.io/docs/query/autotune
         config.getAutoTuneConfig().setProfiling(false);
         config.getAutoTuneConfig().setQueryTuning(false);
@@ -91,7 +93,13 @@ public class EbeanBackendService implements BackendService {
                 .findUnique();
     }
 
+    /**
+     * Obtiene el listado de los pacientes.
+     *
+     * @return the {@link List} of {@link Paciente}
+     */
     public List<Paciente> getPacientes(){
+
         return this.ebeanServer.find(Paciente.class).findList();
     }
 
@@ -108,6 +116,12 @@ public class EbeanBackendService implements BackendService {
                 .findUnique();
     }
 
+    /**
+     * Obtiene todos los controles realizados por un veterinario ordenado por fecha de control.
+     *
+     * @param rutVeterinario del que realizo el control.
+     * @return the {@link List} of {@link Control}.
+     */
     public List<Control> getControlesVeterinario(final String rutVeterinario){
         return this.ebeanServer.find(Control.class)
                 .where()
@@ -135,13 +149,15 @@ public class EbeanBackendService implements BackendService {
      * @param numeroPaciente a asociar.
      * @throws RuntimeException en caso de no encontrar al paciente.
      */
-    public void agregarControl(final Control control, final Integer numeroPaciente){
+    public void agregarControl(Control control, final Integer numeroPaciente){
 
-        /*Paciente p = this.ebeanServer.find(Paciente.class)
+        Paciente p = this.ebeanServer.find(Paciente.class)
                 .where()
                 .eq("numeroPaciente",numeroPaciente)
-                .findUnique();*/
+                .findUnique();
 
+
+        //control.insert();
 
     }
 
