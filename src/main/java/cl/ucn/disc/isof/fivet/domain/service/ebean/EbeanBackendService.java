@@ -125,7 +125,7 @@ public class EbeanBackendService implements BackendService {
     public List<Control> getControlesVeterinario(final String rutVeterinario){
         return this.ebeanServer.find(Control.class)
                 .where()
-                .eq("rut",rutVeterinario)
+                .eq("veterinario.rut",rutVeterinario)
                 .orderBy("fecha")
                 .findList();
     }
@@ -139,7 +139,7 @@ public class EbeanBackendService implements BackendService {
     public List<Paciente> getPacientesPorNombre(final String nombre){
         return this.ebeanServer.find(Paciente.class)
                 .where()
-                .like("nombre",nombre+"%")
+                .ilike("nombre",nombre+"%")
                 .findList();
     }
 
@@ -152,11 +152,9 @@ public class EbeanBackendService implements BackendService {
      */
     public void agregarControl(Control control, final Integer numeroPaciente){
 
-        Paciente p = this.ebeanServer.find(Paciente.class)
-                .where()
-                .eq("numero",numeroPaciente)
-                .findUnique();
+        Paciente p = this.getPaciente(numeroPaciente);
         p.getControles().add(control);
+        p.update();
     }
 
     /**

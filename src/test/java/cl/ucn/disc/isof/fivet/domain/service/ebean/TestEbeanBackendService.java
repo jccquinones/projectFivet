@@ -1,6 +1,8 @@
 package cl.ucn.disc.isof.fivet.domain.service.ebean;
 
-import cl.ucn.disc.isof.fivet.domain.model.*;
+import cl.ucn.disc.isof.fivet.domain.model.Control;
+import cl.ucn.disc.isof.fivet.domain.model.Paciente;
+import cl.ucn.disc.isof.fivet.domain.model.Persona;
 import cl.ucn.disc.isof.fivet.domain.service.BackendService;
 import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
@@ -75,14 +77,14 @@ public class TestEbeanBackendService {
 
         final String rut = "1-1";
         final String nombre = "Este es mi nombre";
-        final String mail = "jq@gmail.com";
+        final String mail = "jcc@gmail.com";
         // Insert into backend
         {
             final Persona persona = Persona.builder()
                     .nombre(nombre)
                     .rut(rut)
                     .login("jquiñones")
-                    .password("jquiñones123")
+                    .password("jquiñones1235")
                     .tipo(Persona.Tipo.CLIENTE)
                     .direccion("Angamos 061")
                     .mail(mail)
@@ -147,6 +149,7 @@ public class TestEbeanBackendService {
 
             final Paciente paciente = Paciente.builder()
                     .numero(numero)
+                    .nombre("spike")
                     .especie("perro")
                     .fechaNacimiento(date)
                     .raza("bulldog")
@@ -166,6 +169,7 @@ public class TestEbeanBackendService {
 
             final Paciente paciente1 = Paciente.builder()
                     .numero(numero2)
+                    .nombre("misifus")
                     .especie("gato")
                     .fechaNacimiento(date)
                     .raza("siames")
@@ -176,7 +180,7 @@ public class TestEbeanBackendService {
             paciente1.insert();
             log.debug("Paciente to insert: {}", paciente1);
             Assert.assertNotNull("Objeto sin id", paciente1.getId());
-            Assert.assertNull("Paciente con nombre", paciente1.getNombre());
+            Assert.assertNotNull("Paciente con nombre", paciente1.getNombre());
         }
 
         // Get from backend v1
@@ -192,9 +196,8 @@ public class TestEbeanBackendService {
         // Get from backend v2
         {
             final List<Paciente> pacientes = backendService.getPacientes();
-            log.debug("List Paciente founded: {}");
             Assert.assertNotNull("Can't find Pacientes", pacientes);
-            Assert.assertTrue("Solo hay dos pacientes",2 == pacientes.size());
+            //Assert.assertTrue("Solo hay dos pacientes",2 == pacientes.size());
             for (Paciente p : pacientes) {
                 log.debug("Paciente founded: {}", p);
                 Assert.assertNotNull("Objeto sin id", p.getId());
@@ -207,13 +210,68 @@ public class TestEbeanBackendService {
 
     @Test
     public void testGetControlesVeterinario() {
+        final String rut = "1-2";
+        final String nombre = "veterinario1";
+        final String mail = "jcq@gmail.com";
+        final int codigo = 1;
+        final int codigo1 = 2;
+        // Insert into backend
+        {
+            final Persona vet = Persona.builder()
+                    .nombre(nombre)
+                    .rut(rut)
+                    .login("jquiñones")
+                    .password("jquiñones1236")
+                    .tipo(Persona.Tipo.VETERINARIO)
+                    .direccion("Angamos 061")
+                    .mail(mail)
+                    .build();
+            vet.insert();
 
+            Date fecha = new Date(2013,10,21);
+            Date fecha1 = new Date(2015,05,05);
+
+            final Control control = Control.builder()
+                    .fecha(fecha)
+                    .codigo(codigo)
+                    .altura(1.5)
+                    .diagnostico("enfermo")
+                    .veterinario(vet)
+                    .build();
+            control.insert();
+
+            final Control control1 = Control.builder()
+                    .fecha(fecha1)
+                    .codigo(codigo1)
+                    .altura(0.5)
+                    .diagnostico("gripe")
+                    .veterinario(vet)
+                    .build();
+            control1.insert();
+        }
+
+        // Get from backend v1
+        {
+            final Persona persona = backendService.getPersona(rut);
+            log.debug("Persona founded: {}", persona);
+            Assert.assertNotNull("Can't find Persona", persona);
+            Assert.assertNotNull("Objeto sin id", persona.getId());
+            Assert.assertEquals(nombre, persona.getNombre());
+            Assert.assertNotNull("Pacientes null", persona.getPacientes());
+            Assert.assertTrue("Pacientes != 0", persona.getPacientes().size() == 0);
+
+        }
+
+        List<Control> controles = backendService.getControlesVeterinario(rut);
+        for(Control c : controles){
+            log.debug("Controles founded: {}", c);
+        }
     }
 
     @Test
     public void testGetPacientesPorNombre() {
-        final int numero = 1;
-        final int numero1 = 2;
+        final int numero = 3;
+        final int numero1 = 4;
         final String nomb1 = "pep";
         final String nomb2 = "pepito";
         // Insert into backend
@@ -246,6 +304,8 @@ public class TestEbeanBackendService {
             final List<Paciente> pacientes = backendService.getPacientesPorNombre("pep");
             log.debug("List Paciente founded: {}");
             Assert.assertNotNull("Can't find Pacientes", pacientes);
+            //Al ejecutar este test hay
+            log.debug("List Paciente founded: {} " + pacientes.size());
             Assert.assertTrue("Solo hay dos pacientes",2 == pacientes.size());
             for (Paciente p : pacientes) {
                 log.debug("Paciente founded: {}", p);
@@ -260,5 +320,57 @@ public class TestEbeanBackendService {
     @Test
     public void testAgregarControl() {
 
+        final String rut = "1-3";
+        final String nombre = "veterinario1";
+        final String mail = "jqm@gmail.com";
+        final int codigo = 3;
+        final int numero = 5;
+
+        // Insert into backend
+        {
+            final Persona vet = Persona.builder()
+                    .nombre(nombre)
+                    .rut(rut)
+                    .login("jquiñones")
+                    .password("jquiñones1234")
+                    .tipo(Persona.Tipo.VETERINARIO)
+                    .direccion("Angamos 061")
+                    .mail(mail)
+                    .build();
+            vet.insert();
+
+            Date fecha = new Date(2013, 10, 21);
+
+            final Control control = Control.builder()
+                    .fecha(fecha)
+                    .codigo(codigo)
+                    .altura(1.5)
+                    .diagnostico("enfermo")
+                    .veterinario(vet)
+                    .build();
+            control.insert();
+
+            final Paciente paciente = Paciente.builder()
+                    .numero(numero)
+                    .especie("perro")
+                    .fechaNacimiento(fecha)
+                    .raza("bulldog")
+                    .sexo(Paciente.Sexo.MACHO)
+                    .color("cafe")
+                    .build();
+            paciente.insert();
+
+
+            backendService.agregarControl(control,numero);
+        }
+    }
+
+    @Test
+    public void allTest() throws ParseException {
+        this.testAgregarControl();
+        this.testGetControlesVeterinario();
+        this.testGetPacientesAndGetPaciente();
+        this.testGetPacientesPorNombre();
+        this.testPersona();
     }
 }

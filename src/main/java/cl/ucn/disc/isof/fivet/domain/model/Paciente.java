@@ -4,7 +4,6 @@ import com.avaje.ebean.annotation.EnumValue;
 import com.durrutia.ebean.BaseModel;
 import lombok.*;
 
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -95,6 +94,6 @@ public class Paciente extends BaseModel {
     @Getter
     @Setter
     @Column
-    @ManyToOne
+    @ManyToMany
     private List<Control> controles;
 }

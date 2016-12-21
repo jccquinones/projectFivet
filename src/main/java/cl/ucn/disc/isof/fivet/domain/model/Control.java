@@ -1,5 +1,6 @@
 package cl.ucn.disc.isof.fivet.domain.model;
 
+import com.durrutia.ebean.BaseModel;
 import lombok.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.persistence.*;
@@ -16,7 +17,15 @@ import java.util.Date;
 @Builder
 @Entity
 @Table
-public class Control {
+public class Control extends BaseModel {
+
+    /**
+     * Codigo
+     */
+    @Getter
+    @NotEmpty
+    @Column
+    private Integer codigo;
 
     /**
      * Fecha
@@ -73,14 +82,6 @@ public class Control {
     @NotEmpty
     @Column
     private String nota;
-
-    /**
-     * Id
-     */
-    @Getter
-    @NotEmpty
-    @Column
-    private int id;
 
     /**
      * Veterinario
