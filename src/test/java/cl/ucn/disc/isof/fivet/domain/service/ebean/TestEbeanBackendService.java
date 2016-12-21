@@ -1,12 +1,17 @@
 package cl.ucn.disc.isof.fivet.domain.service.ebean;
 
-import cl.ucn.disc.isof.fivet.domain.model.Persona;
+import cl.ucn.disc.isof.fivet.domain.model.*;
 import cl.ucn.disc.isof.fivet.domain.service.BackendService;
 import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.junit.rules.Timeout;
 import org.junit.runners.MethodSorters;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Clase de testing del {@link BackendService}.
@@ -70,7 +75,7 @@ public class TestEbeanBackendService {
 
         final String rut = "1-1";
         final String nombre = "Este es mi nombre";
-
+        final String mail = "jq@gmail.com";
         // Insert into backend
         {
             final Persona persona = Persona.builder()
@@ -80,7 +85,7 @@ public class TestEbeanBackendService {
                     .password("jquiñones123")
                     .tipo(Persona.Tipo.CLIENTE)
                     .direccion("Angamos 061")
-                    .mail("jq@gmail.com")
+                    .mail(mail)
                     .build();
 
            persona.insert();
@@ -112,20 +117,91 @@ public class TestEbeanBackendService {
             Assert.assertEquals(nombre, persona.getNombre());
         }
 
+        // Get from backend v3
+        {
+            final Persona persona = backendService.getPersona(mail);
+            log.debug("Persona founded: {}", persona);
+            Assert.assertNotNull("Can't find Persona", persona);
+            Assert.assertEquals(rut, persona.getRut());
+            Assert.assertEquals(nombre, persona.getNombre());
+            Assert.assertEquals(mail, persona.getMail());
+        }
+
     }
 
     @Test
-    public void testGetPersona() {
+    public void testGetPacientesAndGetPaciente() throws ParseException {
 
-    }
+        final int numero = 1;
+        final int numero2 = 2;
+        final SimpleDateFormat formato = new SimpleDateFormat("dd-mm-yyyy");
+        // Insert into backend
+        {
+            String fecha = "21-10-2010";
+            Date date = new Date();
+            try {
+                date = formato.parse(fecha);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-    @Test
-    public void testGetPacientes() {
+            final Paciente paciente = Paciente.builder()
+                    .numero(numero)
+                    .especie("perro")
+                    .fechaNacimiento(date)
+                    .raza("bulldog")
+                    .sexo(Paciente.Sexo.MACHO)
+                    .color("cafe")
+                    .build();
 
-    }
+            paciente.insert();
+            log.debug("Paciente to insert: {}", paciente);
+            Assert.assertNotNull("Objeto sin id", paciente.getId());
 
-    @Test
-    public void testGetPaciente() {
+            try {
+                date = formato.parse("25-05-2013");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            final Paciente paciente1 = Paciente.builder()
+                    .numero(numero2)
+                    .especie("gato")
+                    .fechaNacimiento(date)
+                    .raza("siames")
+                    .sexo(Paciente.Sexo.HEMBRA)
+                    .color("blanco")
+                    .build();
+
+            paciente1.insert();
+            log.debug("Paciente to insert: {}", paciente1);
+            Assert.assertNotNull("Objeto sin id", paciente1.getId());
+            Assert.assertNull("Paciente con nombre", paciente1.getNombre());
+        }
+
+        // Get from backend v1
+        {
+            final Paciente paciente = backendService.getPaciente(numero);
+            log.debug("Paciente founded: {}", paciente);
+            Assert.assertNotNull("Can't find Paciente", paciente);
+            Assert.assertNotNull("Objeto sin id", paciente.getId());
+            Assert.assertNotNull("Paciente sin numero de ficha", paciente.getNumero());
+            Assert.assertTrue(numero == paciente.getNumero());
+        }
+
+        // Get from backend v2
+        {
+            final List<Paciente> pacientes = backendService.getPacientes();
+            log.debug("List Paciente founded: {}");
+            Assert.assertNotNull("Can't find Pacientes", pacientes);
+            Assert.assertTrue("Solo hay dos pacientes",2 == pacientes.size());
+            for (Paciente p : pacientes) {
+                log.debug("Paciente founded: {}", p);
+                Assert.assertNotNull("Objeto sin id", p.getId());
+            }
+
+
+        }
 
     }
 
@@ -136,7 +212,49 @@ public class TestEbeanBackendService {
 
     @Test
     public void testGetPacientesPorNombre() {
+        final int numero = 1;
+        final int numero1 = 2;
+        final String nomb1 = "pep";
+        final String nomb2 = "pepito";
+        // Insert into backend
+        {
+            final Paciente paciente = Paciente.builder()
+                    .numero(numero)
+                    .nombre(nomb1)
+                    .especie("perro")
+                    .raza("bulldog")
+                    .sexo(Paciente.Sexo.MACHO)
+                    .color("cafe")
+                    .build();
 
+            paciente.insert();
+
+            final Paciente paciente1 = Paciente.builder()
+                    .numero(numero1)
+                    .nombre(nomb2)
+                    .especie("gato")
+                    .raza("siames")
+                    .sexo(Paciente.Sexo.HEMBRA)
+                    .color("blanco")
+                    .build();
+
+            paciente1.insert();
+        }
+
+        // Get from backend v1
+        {
+            final List<Paciente> pacientes = backendService.getPacientesPorNombre("pep");
+            log.debug("List Paciente founded: {}");
+            Assert.assertNotNull("Can't find Pacientes", pacientes);
+            Assert.assertTrue("Solo hay dos pacientes",2 == pacientes.size());
+            for (Paciente p : pacientes) {
+                log.debug("Paciente founded: {}", p);
+                Assert.assertNotNull("Objeto sin id", p.getId());
+                Assert.assertNotNull("Objeto sin nombre", p.getNombre());
+            }
+
+
+        }
     }
 
     @Test

@@ -5,9 +5,7 @@ import com.durrutia.ebean.BaseModel;
 import lombok.*;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -95,6 +93,8 @@ public class Paciente extends BaseModel {
      * Listado de controles
      */
     @Getter
+    @Setter
     @Column
-    private List<Control> listaControl;
+    @ManyToOne
+    private List<Control> controles;
 }

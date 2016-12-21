@@ -88,6 +88,7 @@ public class Control {
     @Getter
     @NotEmpty
     @Column
+    @ManyToOne
     private Persona veterinario;
 
 }
